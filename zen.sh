@@ -2,6 +2,33 @@
 # emile@guntari.com
 
 now=`date +%s`
+nowDammit=
+seconds=
+
+usage() {
+  cat << EOF >&2
+Usage: $PROGNAME [-n <play it now>] [-s <seconds to wait>]
+
+EOF
+  exit 1
+}
+while getopts ns: OPTION; do
+  case $OPTION in
+    (n) NowDammit=$OPTARG;;
+    (s) seconds=$OPTARG;;
+    (*) usage
+  esac
+done
+shift "$((OPTIND - 1))"
+
+if [ "x" != "x$seconds" ];then
+    isInt=`awk -v s=$seconds 'BEGIN{ if ( s !~ /^[0-9]+$/) print 1 }'`
+    if [ "$isInt" == "1" ];then
+      echo s must be an integer
+      exit 1
+    fi
+    echo we have a manual seconds entry of $seconds
+fi
 
 # shortest and longest wait time between bells
 intervalMin=90
@@ -86,11 +113,11 @@ fireUp()
 #playRandomSound
 #exit 1
 
-# Do we have a time to Gong?
-if [ -f /tmp/zen ]
-then
-# /tmp/zen exists!
-# read integer from /tmp/zen
+if [ "x" != "x$seconds" ];then
+    gongTime=`expr $now + $seconds`
+    echo $gongTime > /tmp/zen
+    echo MANUAL $seconds >> /home/kapu/log/zen.log
+elif [ -f /tmp/zen ];then
     gongTime=$(cat /tmp/zen)
 else
     setGongTime
@@ -105,5 +132,4 @@ then
 else
   echo Gong in $(($gongTime - $now)) seconds
 fi
-
 
