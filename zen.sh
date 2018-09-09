@@ -101,7 +101,6 @@ playAll()
 {
 # Get list of files in RANDOM_BELL_SCRIPT_BELLS into a \a delimited string bell_list
 bell_list=`find /home/kapu/mySounds/zen/RANDOM_BELL_SCRIPT_BELLS -type f | egrep -i 'aiff|ogg|wav|mp3' | tr '\n' '\a' | sed 's/.$//'`
-echo $bell_list > /tmp/foo
 
 awk -v bell_list="$bell_list" -f - <<EOF
     BEGIN{
@@ -154,7 +153,6 @@ fireUp()
      playRandomSound
    fi
 }
-
 
 if [ "x" != "x$seconds" ];then
     gongTime=`expr $now + $seconds`
