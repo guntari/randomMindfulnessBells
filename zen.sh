@@ -1,5 +1,5 @@
 #!/bin/sh
-# emile at guntari.com
+# emile at guntari dotcom
 
 now=`date +%s`
 allBells=
@@ -58,7 +58,7 @@ setGongTime()
 playRandomSound()
 {
 # Get list of files in RANDOM_BELL_SCRIPT_BELLS into a \a delimited string bell_list
-bell_list=`find /home/kapu/mySounds/zen/RANDOM_BELL_SCRIPT_BELLS -type f | tr '\n' '\a'`
+bell_list=`find /home/kapu/mySounds/zen/RANDOM_BELL_SCRIPT_BELLS -type f | egrep -i 'aiff|ogg|wav|mp3' | tr '\n' '\a' | sed 's/.$//'`
 
 awk -v bell_list="$bell_list" -f - <<EOF
     BEGIN{
@@ -76,12 +76,12 @@ awk -v bell_list="$bell_list" -f - <<EOF
          if (chickenDinner ~ /47665__arnaud-coutancier__tibetan-bowl-bol-tibet-attac.wav/) vol=130
          if (chickenDinner ~ /48795__itsallhappening__bell-inside.wav/) vol=330
          if (chickenDinner ~ /48796__itsallhappening__bell-outside.wav/) vol=230
-         if (chickenDinner ~ /80578__benboncan__nepalese-singing-bowl.wav/) vol=90
+         if (chickenDinner ~ /80578__benboncan__nepalese-singing-bowl.wav/) vol=80
          if (chickenDinner ~ /Bell635-PqK5umGu0hE.wav/) vol=100
          if (chickenDinner ~ /PlumVillage.wav/) vol=130
          if (chickenDinner ~ /PlumVillage_bell.000.wav/) vol=130
          if (chickenDinner ~ /PlumVillage_bell.001.wav/) vol=130
-         if (chickenDinner ~ /PlumVillage_bell_withSmallHitAtEnd.000.wav/) vol=140
+         if (chickenDinner ~ /PlumVillage_bell_withSmallHitAtEnd.000.wav/) vol=130
          if (chickenDinner ~ /ShantidevaCenter.wav/) vol=120
          if (chickenDinner ~ /bowl.ogg/) vol=120
          if (chickenDinner ~ /end_daikei.wav/) vol=110
@@ -100,7 +100,8 @@ EOF
 playAll()
 {
 # Get list of files in RANDOM_BELL_SCRIPT_BELLS into a \a delimited string bell_list
-bell_list=`find /home/kapu/mySounds/zen/RANDOM_BELL_SCRIPT_BELLS -type f | tr '\n' '\a'`
+bell_list=`find /home/kapu/mySounds/zen/RANDOM_BELL_SCRIPT_BELLS -type f | egrep -i 'aiff|ogg|wav|mp3' | tr '\n' '\a' | sed 's/.$//'`
+echo $bell_list > /tmp/foo
 
 awk -v bell_list="$bell_list" -f - <<EOF
     BEGIN{
@@ -118,12 +119,12 @@ awk -v bell_list="$bell_list" -f - <<EOF
             if (bell[i] ~ /47665__arnaud-coutancier__tibetan-bowl-bol-tibet-attac.wav/) vol=130
             if (bell[i] ~ /48795__itsallhappening__bell-inside.wav/) vol=330
             if (bell[i] ~ /48796__itsallhappening__bell-outside.wav/) vol=230
-            if (bell[i] ~ /80578__benboncan__nepalese-singing-bowl.wav/) vol=90
+            if (bell[i] ~ /80578__benboncan__nepalese-singing-bowl.wav/) vol=80
             if (bell[i] ~ /Bell635-PqK5umGu0hE.wav/) vol=100
             if (bell[i] ~ /PlumVillage.wav/) vol=130
             if (bell[i] ~ /PlumVillage_bell.000.wav/) vol=130
             if (bell[i] ~ /PlumVillage_bell.001.wav/) vol=130
-            if (bell[i] ~ /PlumVillage_bell_withSmallHitAtEnd.000.wav/) vol=140
+            if (bell[i] ~ /PlumVillage_bell_withSmallHitAtEnd.000.wav/) vol=130
             if (bell[i] ~ /ShantidevaCenter.wav/) vol=120
             if (bell[i] ~ /bowl.ogg/) vol=120
             if (bell[i] ~ /end_daikei.wav/) vol=110
