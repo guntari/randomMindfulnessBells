@@ -1,5 +1,5 @@
 #!/bin/sh
-# emile at guntari dotcom
+# emile at guntari.com
 
 now=`date +%s`
 allBells=
@@ -92,7 +92,7 @@ awk -v bell_list="$bell_list" -f - <<EOF
          if (chickenDinner ~ /230 27421__kerri__zenbell-1/) vol=230
          if (chickenDinner ~ /zen_flesh_zen_bones_X2/) vol=700
         printf("%s VOLUME:%d\n", chickenDinner, vol)
-        system("mplayer -softvol -volume " vol " " chickenDinner )
+        system("mplayer -really-quiet -softvol -volume " vol " " chickenDinner )
     }
 EOF
 }
@@ -105,6 +105,7 @@ bell_list=`find /home/kapu/mySounds/zen/RANDOM_BELL_SCRIPT_BELLS -type f | tr '\
 awk -v bell_list="$bell_list" -f - <<EOF
     BEGIN{
         n=split(bell_list, bell, "\a")
+        c=n
         for(i in bell){
             vol=100
             if (bell[i] ~ /116315__garuda1982__big-singing-bowl.wav/) vol=150
@@ -132,8 +133,10 @@ awk -v bell_list="$bell_list" -f - <<EOF
             if (bell[i] ~ /42095__fauxpress__bell-meditation/) vol=130
             if (bell[i] ~ /230 27421__kerri__zenbell-1/) vol=230
             if (bell[i] ~ /zen_flesh_zen_bones_X2/) vol=700
-            printf("%s VOLUME:%d\n", bell[i], vol)
-            system("mplayer -softvol -volume " vol " " bell[i])
+            s=bell[i]
+            sub("^.*/", "", s)
+            printf("BELL:%d of %d\tVOLUME:%d\t%s\n", c--, n, vol, s)
+            system("mplayer -really-quiet -softvol -volume " vol " " bell[i])
         }
     }
 EOF
