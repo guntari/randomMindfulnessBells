@@ -8,10 +8,9 @@ seconds=
 
 usage() {
   cat << EOF >&2
-Usage: $PROGNAME [-a <play all bells>] [-n <play it now>] [-s <seconds to wait>]
-
+Usage: $(basename "$0") [-a <play all bells>] [-n <play it now>] [-s <seconds to wait>]
 EOF
-  exit 1
+  #exit 1
 }
 while getopts ans: OPTION; do
   case $OPTION in
@@ -64,35 +63,37 @@ awk -v bell_list="$bell_list" -f - <<EOF
     BEGIN{
         n=split(bell_list, bell, "\a")
         srand()
-        chickenDinner=bell[int(1+rand()*(n-2))]
+        fullPathSoundfile=bell[int(1+rand()*(n-2))]
         vol=100
-         if (chickenDinner ~ /116315__garuda1982__big-singing-bowl.wav/) vol=150
-         if (chickenDinner ~ /122647__juskiddink__singing-bowl-2.wav/) vol=120
-         if (chickenDinner ~ /127167__daphne-in-wonderland__tibetan-ball.wav/) vol=120
-         if (chickenDinner ~ /390201__ganapataye__02-bells.aiff/) vol=930
-         if (chickenDinner ~ /400819__enhuber__singing-bowl.wav/) vol=230
-         if (chickenDinner ~ /415141__s-light__singing-bowl-single-strike-6.wav/) vol=130
-         if (chickenDinner ~ /432568__vortichez__gong-tibetan-buddhist-temple-ulaanbaatar-mongolia_EDIT_000.wav/) vol=1000
-         if (chickenDinner ~ /47665__arnaud-coutancier__tibetan-bowl-bol-tibet-attac.wav/) vol=130
-         if (chickenDinner ~ /48795__itsallhappening__bell-inside.wav/) vol=330
-         if (chickenDinner ~ /48796__itsallhappening__bell-outside.wav/) vol=230
-         if (chickenDinner ~ /80578__benboncan__nepalese-singing-bowl.wav/) vol=80
-         if (chickenDinner ~ /Bell635-PqK5umGu0hE.wav/) vol=100
-         if (chickenDinner ~ /PlumVillage.wav/) vol=130
-         if (chickenDinner ~ /PlumVillage_bell.000.wav/) vol=130
-         if (chickenDinner ~ /PlumVillage_bell.001.wav/) vol=130
-         if (chickenDinner ~ /PlumVillage_bell_withSmallHitAtEnd.000.wav/) vol=130
-         if (chickenDinner ~ /ShantidevaCenter.wav/) vol=120
-         if (chickenDinner ~ /bowl.ogg/) vol=120
-         if (chickenDinner ~ /end_daikei.wav/) vol=110
-         if (chickenDinner ~ /end_hatto_bell.wav/) vol=100
-         if (chickenDinner ~ /end_sodo_bell.wav/) vol=100
-         if (chickenDinner ~ /zen_flesh_zen_bones.wav/) vol=700
-         if (chickenDinner ~ /42095__fauxpress__bell-meditation/) vol=130
-         if (chickenDinner ~ /230 27421__kerri__zenbell-1/) vol=230
-         if (chickenDinner ~ /zen_flesh_zen_bones_X2/) vol=700
-        printf("%s VOLUME:%d\n", chickenDinner, vol)
-        system("mplayer -really-quiet -softvol -volume " vol " " chickenDinner )
+         if (fullPathSoundfile ~ /116315__garuda1982__big-singing-bowl.wav/) vol=150
+         if (fullPathSoundfile ~ /122647__juskiddink__singing-bowl-2.wav/) vol=120
+         if (fullPathSoundfile ~ /127167__daphne-in-wonderland__tibetan-ball.wav/) vol=120
+         if (fullPathSoundfile ~ /390201__ganapataye__02-bells.aiff/) vol=930
+         if (fullPathSoundfile ~ /400819__enhuber__singing-bowl.wav/) vol=230
+         if (fullPathSoundfile ~ /415141__s-light__singing-bowl-single-strike-6.wav/) vol=130
+         if (fullPathSoundfile ~ /432568__vortichez__gong-tibetan-buddhist-temple-ulaanbaatar-mongolia_EDIT_000.wav/) vol=1000
+         if (fullPathSoundfile ~ /47665__arnaud-coutancier__tibetan-bowl-bol-tibet-attac.wav/) vol=130
+         if (fullPathSoundfile ~ /48795__itsallhappening__bell-inside.wav/) vol=330
+         if (fullPathSoundfile ~ /48796__itsallhappening__bell-outside.wav/) vol=230
+         if (fullPathSoundfile ~ /80578__benboncan__nepalese-singing-bowl.wav/) vol=80
+         if (fullPathSoundfile ~ /Bell635-PqK5umGu0hE.wav/) vol=100
+         if (fullPathSoundfile ~ /PlumVillage.wav/) vol=130
+         if (fullPathSoundfile ~ /PlumVillage_bell.000.wav/) vol=130
+         if (fullPathSoundfile ~ /PlumVillage_bell.001.wav/) vol=130
+         if (fullPathSoundfile ~ /PlumVillage_bell_withSmallHitAtEnd.000.wav/) vol=130
+         if (fullPathSoundfile ~ /ShantidevaCenter.wav/) vol=120
+         if (fullPathSoundfile ~ /bowl.ogg/) vol=120
+         if (fullPathSoundfile ~ /end_daikei.wav/) vol=110
+         if (fullPathSoundfile ~ /end_hatto_bell.wav/) vol=100
+         if (fullPathSoundfile ~ /end_sodo_bell.wav/) vol=100
+         if (fullPathSoundfile ~ /zen_flesh_zen_bones.wav/) vol=700
+         if (fullPathSoundfile ~ /42095__fauxpress__bell-meditation/) vol=130
+         if (fullPathSoundfile ~ /230 27421__kerri__zenbell-1/) vol=230
+         if (fullPathSoundfile ~ /zen_flesh_zen_bones_X2/) vol=700
+         s=fullPathSoundfile
+         sub("^.*/", "", s)
+         printf("VOLUME:%d\t%s\n", vol, s)
+        system("mplayer -really-quiet -softvol -volume " vol " " fullPathSoundfile )
     }
 EOF
 }
@@ -177,6 +178,8 @@ elif [ $gongTime -le $now ]; then
   rm /tmp/zen
   exit 0
 else
-  echo Gong in $(($gongTime - $now)) seconds
+  s=$(($gongTime - $now))
+  usage
+  echo Gong in \(hh:mm:ss\) `awk -v s="$s" 'BEGIN {while (s >= 60){if (s >= 3600){++h;s=s-3600} if(s >= 60){++m;s=(s-60)} } printf("%02d:%02d:%02d\n", h, m, s) }'`
 fi
 
