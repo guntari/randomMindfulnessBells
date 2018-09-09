@@ -1,5 +1,5 @@
 #!/bin/sh
-# emile@guntari.com
+# emile at guntari.com
 
 now=`date +%s`
 nowDammit=
@@ -14,7 +14,7 @@ EOF
 }
 while getopts ns: OPTION; do
   case $OPTION in
-    (n) NowDammit=$OPTARG;;
+    (n) NowDammit=1;;
     (s) seconds=$OPTARG;;
     (*) usage
   esac
@@ -55,7 +55,6 @@ setGongTime()
 
 playRandomSound()
 {
-    echo started function
 # Get list of files in RANDOM_BELL_SCRIPT_BELLS into a \a delimited string bell_list
 bell_list=`find /home/kapu/mySounds/zen/RANDOM_BELL_SCRIPT_BELLS -type f | tr '\n' '\a'`
 
@@ -91,7 +90,6 @@ awk -v bell_list="$bell_list" -f - <<EOF
         system("mplayer -softvol -volume " vol " " chickenDinner )
     }
 EOF
-    echo shell function exit
 }
 
 fireUp()
@@ -102,16 +100,10 @@ fireUp()
    elif [ -e /tmp/zazen_is_running ]; then
        exit
    else
-     #/home/kapu/bin/maybe mplayer -softvol -volume 40 /home/kapu/mySounds/zen/bowl.ogg
-     #/home/kapu/bin/maybe mplayer -softvol -volume 40 /home/kapu/mySounds/zen/ShantidevaCenter.wav
-     #/home/kapu/bin/maybe mplayer -softvol -volume 100 /home/kapu/mySounds/zen/ShantidevaCenter.wav
      playRandomSound
    fi
 }
 
-
-#playRandomSound
-#exit 1
 
 if [ "x" != "x$seconds" ];then
     gongTime=`expr $now + $seconds`
@@ -124,11 +116,13 @@ else
     exit
 fi
 
-if [ $gongTime -le $now ]
-then
+if [ "x" != "x$NowDammit" ]; then
+  playRandomSound
+  exit 0
+elif [ $gongTime -le $now ]; then
   fireUp
   rm /tmp/zen
-  exit
+  exit 0
 else
   echo Gong in $(($gongTime - $now)) seconds
 fi
